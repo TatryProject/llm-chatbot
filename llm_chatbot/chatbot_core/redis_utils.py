@@ -1,7 +1,7 @@
 import os
 import redis
 import yaml
-from rq import Queue, Worker
+import django_rq
 
 # Get current working dir
 current_dir = os.getcwd()
@@ -13,11 +13,10 @@ with open(config_path, 'r') as stream:
 redis_host = settings['REDIS']['HOST']
 redis_port = settings['REDIS']['PORT']
 
-redis_conn = redis.Redis(host=redis_host, port=redis_port)
+# redis_conn = redis.Redis(host=redis_host, port=redis_port)
 
 # Create a Redis Queue
-rq = Queue(connection=redis_conn)
 
 # Create and run worker to process jobs from queue
-worker = Worker([rq], connection=redis_conn)
+worker = django_rq.get_worker()
 worker.work()
