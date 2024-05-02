@@ -20,4 +20,5 @@ from django.urls import include, path
 urlpatterns = [
     path("chatbot-core/", include("chatbot_core.urls")),
     path('admin/', admin.site.urls),
+    path('django-rq/', include('django_rq.urls')),
 ]

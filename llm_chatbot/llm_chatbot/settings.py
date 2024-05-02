@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+import yaml
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_rq'
 ]
 
 MIDDLEWARE = [
@@ -121,3 +124,19 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+current_dir = os.getcwd()
+config_path = os.path.join(current_dir, 'config.yaml')
+with open(config_path, 'r') as stream:
+    settings = yaml.safe_load(stream)
+
+redis_host = settings['REDIS']['HOST']
+redis_port = settings['REDIS']['PORT']
+RQ_QUEUES = {
+    'default': {
+        'HOST': redis_host,
+        'PORT': redis_port,
+        'DB': 0,
+        'DEFAULT_TIMEOUT': 360,
+    }
+}
